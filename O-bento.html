@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>O-bento</title>
+    <meta charset="UTF-8" />
+    <!--<link rel="stylesheet" href="css/mackbookpro_13.css"
+    <script type="text/javascript" src="js/mackbookpro_13.js" ></script>-->
+    <script type="text/javascript" src="js/jquery-1.8.1.js" ></script>
+    <style>
+        /*bodyの設定*/
+		body{
+		    /*background-color: rgba(156,189,251,0.91);*/
+		}
+		
+		/*main frameの設定<絶対位置、windowのfullサイズ>*/
+		div.class_main_frame{
+		    position: absolute;
+		    width: 100%;
+		    height: 100%;
+		    margin: 0px;
+		    left: 0px;
+		    top: 0px;
+		    /*border: solid 2px #556677;*/
+		    /*background-color: aqua;*/
+		}
+		
+		/*4画面の共通設定<絶対位置>*/
+		div.class_main_frame div{
+		    position: absolute;
+		    margin: 0px;
+		}
+		
+		/*上画面の設定*/
+		div#id_sidebar_top{
+			width: 100%;
+		    left: 0px;
+		    top: 0px;
+		    /*高さを動画に*/
+		    -webkit-transition: height 0.5s;
+		    background: url(image/patterns_32.png) repeat, -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #dcffff), color-stop(1.00, #4ffffd));
+		    background: url(image/patterns_32.png) repeat, -webkit-linear-gradient(#dcffff, #4ffffd);
+		    background: url(image/patterns_32.png) repeat, linear-gradient(#dcffff, #4ffffd);
+		}
+		
+		/*初期設定<高さ:0 レイヤー順位:0>*/
+		div.class_sidebar_top{
+		    height: 0%;
+		    z-index: 0;
+		    
+		}
+		
+		/*表示後の設定<full画面、レイヤー順位:4(一番上)>*/
+		div.class_sidebar_top_return{
+		    height: 100%;
+		    z-index: 4;
+		}
+		
+		/*上画面を表示するためのイベントレイアウト*/
+		div#id_slider_top{
+		    position: absolute;
+		    width: 100%;
+		    height: 10px;
+		    left: 0px;
+		    margin: 0px;
+		    /*background-color: aqua;*/
+		    opacity: 0.5;
+		    /*-webkit-animation: "slider_anime" 1s;*//*最初からアニメになっちゃう*/
+		}
+		
+		/*上画面が表示前の設定*/
+		div.class_slider_top{
+		    bottom: -10px;/**/
+		}
+		/*表示後の設定*/
+		div.class_slider_top_return{
+		    bottom: 0px;
+		}
+		
+		/*上画面表示する前の矢印設定*/
+		span.class_span_top_down{
+			position: absolute;
+			left: 0px;
+			top: -10px;/*矢印画像：10pxのスペースがあるので*/
+			margin: 0px 50%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Down32.png");
+		}
+		/*表示後の矢印設定*/
+		span.class_span_top_up{
+			position: absolute;
+			left: 0px;
+			bottom: -8px;
+			margin: 0px 50%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Up32.png");
+		}
+
+		div#id_frame_top{
+		    position: absolute;
+		    display: block;
+		    
+		}
+		div.class_frame_top_display_none{
+		    width: 0;
+		    height: 0;
+		}
+		
+		div.class_frame_top_display{
+		    top: 5%;
+		    left: 5%;
+		    width: 90%;
+		    height: 90%;
+		    border: solid 2px black;
+		}
+		
+		div.class_frame_top_display_none p{
+			visibility: hidden;
+			opacity: 0;
+		    /*-webkit-transition: all 0.1s ease 0s;*/
+		}
+		
+		div.class_frame_top_display p{
+		/*div.class_frame_top_display p{*/
+			visibility: visible;
+			opacity: 1;
+			/*親要素のイベントにもなる??webkitTransitionEndが呼ばれる*/
+		    /*-webkit-transition: opacity 0.5s ease 1s;*/
+		}
+		
+		/*bottom*/
+		div#id_sidebar_bottom{
+			width: 100%;
+		    left: 0px;
+		    bottom: 0px;
+		    -webkit-transition: height 0.5s;
+		    background: url(image/patterns_35.png) repeat, -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #4ffffd), color-stop(0.00, #dcffff));
+		    background: url(image/patterns_35.png) repeat, -webkit-linear-gradient(#dcffff, #4ffffd);
+		    background: url(image/patterns_35.png) repeat, linear-gradient(#dcffff, #4ffffd);
+		}
+		div.class_sidebar_bottom{
+			height: 0%;
+		    z-index: 1;
+		}
+		div.class_sidebar_bottom_return{
+			height: 100%;
+		    z-index: 4;
+		}
+		
+		div#id_slider_bottom{
+		    position: absolute;
+		    width: 100%;
+		    height: 10px;
+		    left: 0px;
+		    margin: 0px;
+		    /*background-color: rgba(170,150,198,0.98);*/
+		    /*-webkit-animation: "slider_anime" 0.5s;*/
+		}
+		div.class_slider_bottom{
+		    top: -10px;
+		}
+		div.class_slider_bottom_return{
+		    top: 0px;
+		}
+		
+		span.class_span_bottom_up{
+			position: absolute;
+			left: 0px;
+			top: -14px;
+			margin: 0px 50%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Up32.png");
+		}
+		
+		span.class_span_bottom_down{
+			position: absolute;
+			left: 0px;
+			bottom: -14px;
+			margin: 0px 50%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Down32.png");
+		}
+		
+		div#id_frame_bottom{
+		    position: absolute;
+		    display: block;
+		    
+		}
+		div.class_frame_bottom_display_none{
+		    width: 0;
+		    height: 0;
+		}
+		
+		div.class_frame_bottom_display{
+		    top: 5%;
+		    left: 5%;
+		    width: 90%;
+		    height: 90%;
+		    border: solid 2px black;
+		}
+		
+		div.class_frame_bottom_display_none p{
+			visibility: hidden;
+			opacity: 0;
+		    /*-webkit-transition: all 0.1s ease 0s;*/
+		}
+		
+		div.class_frame_bottom_display p{
+		/*div.class_frame_top_display p{*/
+			visibility: visible;
+			opacity: 1;
+			/*親要素のイベントにもなる??webkitTransitionEndが呼ばれる*/
+		    /*-webkit-transition: opacity 0.5s ease 1s;*/
+		}
+		
+		/*Left*/
+		div#id_sidebar_left{
+		    height: 100%;
+		    top: 0px;
+		    -webkit-transition: width 0.5s;
+		    background: url(image/patterns_05.png) repeat, -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #4ffffd), color-stop(0.00, #dcffff));
+		    background: url(image/patterns_05.png) repeat, -webkit-linear-gradient(#dcffff, #4ffffd);
+		    background: url(image/patterns_05.png) repeat, linear-gradient(#dcffff, #4ffffd);
+
+		}
+		div.class_sidebar_left{
+			width: 0%;
+		    left: 0px;
+		    z-index: 2;    
+		}
+		div.class_sidebar_left_return{
+			width: 100%;
+		    left: 0px; 
+		    z-index: 4;
+		}
+		
+		div#id_slider_left{
+		    position: absolute;
+		    width: 10px;
+		    height: 100%;
+		    top: 0px;
+		    margin: 0px;
+		    /*background-color: purple;
+		    -webkit-animation: "slider_anime" 0.5s;*/
+		}
+		div.class_slider_left{
+		    left: 0px;
+		}
+		div.class_slider_left_return{
+		    right: 0px;
+		}
+		
+		span.class_span_left_right{
+			position: absolute;
+			left: -10px;
+			top: 0px;
+			margin: 50% 0%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Right32.png");
+		}
+		
+		span.class_span_left_left{
+			position: absolute;
+			right: -10px;
+			top: 0px;
+			margin: 50% 0%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Left32.png");
+		}
+		
+		div#id_frame_left{
+		    position: absolute;
+		    display: block;
+		    
+		}
+		div.class_frame_left_display_none{
+		    width: 0;
+		    height: 0;
+		}
+		
+		div.class_frame_left_display{
+		    top: 5%;
+		    left: 5%;
+		    width: 90%;
+		    height: 90%;
+		    border: solid 2px black;
+		}
+		
+		div.class_frame_left_display_none p{
+			visibility: hidden;
+			opacity: 0;
+		    /*-webkit-transition: all 0.1s ease 0s;*/
+		}
+		
+		div.class_frame_left_display p{
+		/*div.class_frame_top_display p{*/
+			visibility: visible;
+			opacity: 1;
+			/*親要素のイベントにもなる??webkitTransitionEndが呼ばれる*/
+		    /*-webkit-transition: opacity 0.5s ease 1s;*/
+		}
+		
+		/*Right*/
+		div#id_sidebar_right{
+		    height: 100%;
+		    top: 0px;
+		    -webkit-transition: width 0.5s;
+		    background: url(image/patterns_01.png) repeat, -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #4ffffd), color-stop(0.00, #dcffff));
+		    background: url(image/patterns_01.png) repeat, -webkit-linear-gradient(#dcffff, #4ffffd);
+		    background: url(image/patterns_01.png) repeat, linear-gradient(#dcffff, #4ffffd);
+		}
+		div.class_sidebar_right{
+		    width: 0%;
+		    right: 0px;
+		    z-index: 3;
+		}
+		div.class_sidebar_right_return{
+		    width: 100%;
+		    right: 0px;
+		    z-index: 4;
+		}
+		
+		div#id_slider_right{
+		    position: absolute;
+		    width: 10px;
+		    height: 100%;
+		    top: 0px;
+		    margin: 0px;
+		    /*background-color: purple;
+		    -webkit-animation: "slider_anime" 0.5s;*/
+		}
+		
+		div.class_slider_right{
+		    left: -10px;
+		}
+		div.class_slider_right_return{
+		    left: 0px;
+		}
+		
+		span.class_span_right_left{
+			position: absolute;
+			right: -10px;
+			top: 0px;
+			margin: 50% 0%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Left32.png");
+		}
+		
+		span.class_span_right_right{
+			position: absolute;
+			left: -10px;
+			top: 0px;
+			margin: 50% 0%;
+			width: 32px;
+			height: 32px;
+			background-image: url("image/Right32.png");
+		}
+		
+		div#id_frame_right{
+		    position: absolute;
+		    display: block;
+		    
+		}
+		div.class_frame_right_display_none{
+		    width: 0;
+		    height: 0;
+		}
+		
+		div.class_frame_right_display{
+		    top: 5%;
+		    left: 5%;
+		    width: 90%;
+		    height: 90%;
+		    border: solid 2px black;
+		}
+		
+		div.class_frame_right_display_none p{
+			visibility: hidden;
+			opacity: 0;
+		    /*-webkit-transition: all 0.1s ease 0s;*/
+		}
+		
+		div.class_frame_right_display p{
+		/*div.class_frame_top_display p{*/
+			visibility: visible;
+			opacity: 1;
+			/*親要素のイベントにもなる??webkitTransitionEndが呼ばれる*/
+		    /*-webkit-transition: opacity 0.5s ease 1s;*/
+		}
+		
+		
+		@-webkit-keyframes "slider_anime"{
+		    0%{opacity: 1.0; width: 100%; height: 100%;}
+		    50%{opacity: 0.5; width: 50%; height: 50%;}
+		    100%{opacity: 1.0; width: 100%; height: 100%;}
+		}
+		
+		div.class_member_frame{
+		    position: absolute;
+		    width: 100%;
+		    height: 100%;
+		    /*margin: 10px;*//*width,heightが100%なので効かない？*/
+		    padding: 0px;
+		    /*border: solid 10px rgba(181,248,211,0.0);*/
+		    -webkit-box-sizing: border-box;
+		    /*-webkit-border-image: url("image/bg_dot.png") 15 / 10px repeat repeat;*//*ok*/
+		    /*
+		    -webkit-border-image-source: url("image/Solid Lavender.png");
+		    -webkit-border-image-slice: 128px;
+		    -webkit-border-image-width: 10px;
+		    */
+		    
+		    background: url(image/patterns_31.png) repeat, -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #ed9b9b), color-stop(0.00, #f8c8f9));
+		    background: url(image/patterns_31.png) repeat, -webkit-linear-gradient(#f8c8f9, #ed9b9b);
+		    background: url(image/patterns_31.png) repeat, linear-gradient(#f8c8f9, #ed9b9b);
+
+		}
+		
+		div.class_member_frame ul{
+		    position: absolute;
+		    width: 100%;
+		    height: 100%;
+		    margin: 10px;
+		    padding: 0px;
+		    list-style-type: none;
+		}	
+		
+		div.class_member_frame ul li{
+		/*li.class_member{*/
+		    position: absolute;
+		    width: 100px;
+		    height: 20px;
+		    margin-top: 5px;
+		    border: 2px solid rgba(242,201,245,0.92);
+		    border-radius: 0.5em;
+		    background-color: rgba(207,249,180,0.79);
+		    text-align: center;
+		    vertical-align: middle;
+		    -webkit-transition: all 0.5s;
+		    background: -webkit-gradient(linear, left top, left bottom, color-stop(1.00, #aef333), color-stop(0.50, #a1d54f), color-stop(0.50, #a1d54f), color-stop(0.00, #a2d93f));
+		    background: -webkit-linear-gradient(top, #a2d93f 0%, #a1d54f 50%, #a1d54f 50%, #aef333 100%);
+		    background: linear-gradient(to bottom, #a2d93f 0%, #a1d54f 50%, #a1d54f 50%, #aef333 100%);
+		}
+		
+		li.class_member_selected{
+			/*visibility: hidden;*//*ok*/
+		    -webkit-animation: 'opacity' 2s;/*ok。もとに戻る？*/
+		    /*
+		    position: relative; 
+		    left: 0px; 
+		    top: 0px;
+		    -webkit-transition: all 0.5s ease 2s;*//*ng*/
+		}
+		
+		@-webkit-keyframes "opacity"{
+		    0%{opacity: 1.0;}
+		    25%{opacity: 0.75;}
+		    50%{opacity: 0.5;}
+		    75%{opacity: 0.25;}
+		    /*80%{opacity: 0;  position: relative; left: 0px; top: 0px;}*/
+		    100%{opacity: 1.0;}
+		}
+		
+		@-webkit-keyframes "scale"{
+		    0%{-webkit-transform: scale(1.0, 1.0);}
+		    50%{-webkit-transform: scale(0.9, 0.9);}
+		    25%{-webkit-transform: scale(1.0, 1.0);}
+		}
+		
+		
+    </style>
+    <script>
+		var member_width = 100 + 10;
+		var member_height = 20 + 10;
+		var member_frame_margin_width = 20;//TBD
+		var member_frame_margin_height = 20;//TBD
+		var member_frame_width = window.innerWidth - member_frame_margin_width * 2;
+		var member_frame_height = window.innerHeight - member_frame_margin_height * 2;
+		var member_array_count_width = Math.floor(member_frame_width / member_width) - 1;
+		var member_array_count_height = Math.floor(member_frame_height / member_height) - 1;
+		
+		//alert(window.innerWidth + ":" + window.innerHeight);
+		//alert(member_array_count_width + ":" + member_array_count_height);
+		
+		/*今後jQuery使用*/
+		function start() {
+			/*
+			var eleBody = document.getElementsByName("body");
+			var cssBody = window.getComputedStyle(eleBody, null);
+		    eleBody.style.width = window.innerWidth;
+		    eleBody.style.height = window.innerHeight;
+		    alert("0");
+		    var eleMemberList = document.getElementById("id_member_list");
+		    alert("1");
+		    var memberList = eleMemberList.querySelectorAll("li");
+		    alert("2");
+		    for (var i = 0; i < memberList.length; i++){
+		        var member = memberList[i];
+		        // random
+		        member.style.left = 100 * i;
+		        member.style.top = 50 * i;
+		        alert("3");
+		    }*/
+		}
+		
+		
+		$(document).ready(function(){
+			/*onloadはいつ呼ばれる？*/
+			/*$("body").click(function() {*/
+			
+			$(window).load(function() {
+			    // 反映されない　
+		    	//$("body").css("width", window.innerWidth);
+		    	//$("body").css("height", window.innerHeight);
+		    	
+		    	
+		    	//$("div.class_main_frame").css("width", window.innerWidth);
+		    	//$("div.class_main_frame").css("height", window.innerHeight);
+		
+		    	// メンバー情報を読み込む
+		    	/*
+		    	var eleMemberFrame = document.getElementById("id_member_frame");
+		    	var eleMemberList = document.createElement("ul");
+		    	eleMemberFrame.appendChild(eleMemberList);*/
+		    	
+		    	/*jqueryでのイベント追加が効かないようなので。。。調査。とりあえずハードコーディングで直接htmlに追加
+		    	$("#id_member_frame").append('<ul id="id_member_list" class="class_member_list" ></ul>');
+		    	$("#id_member_list").append('<li id="id_member_1" onclick="member_click_1()">文光石</li>');
+		    	$("#id_member_list").append('<li id="id_member_2" onclick="member_click_2()">丸山優子</li>');
+		    	$("#id_member_list").append('<li id="id_member_3" onclick="member_click_3()">丸山俊</li>');
+		    	*/
+		    	/*
+		    	$("#id_member_1").css("left", "0px");
+		    	$("#id_member_1").css("top", "0px");
+		    	$("#id_member_2").css("left", "100px");
+		    	$("#id_member_2").css("top", "100px");
+		    	$("#id_member_3").css("left", "200px");
+		    	$("#id_member_3").css("top", "200px");
+		    	*/
+		    	
+		    	// 初期化
+		    	/*
+		    	var member_array = new Array(member_array_count_height);
+		    	for (var i = 0; i < member_array_count_height; i++){
+		        	member_array[i] = new Array(member_array_count_width);
+		        	for (var j = 0; j < member_array_count_width; j++){
+		            	member_array[i][j] = 0;
+		        	}
+		    	}
+		    	*/
+		    	var length = member_array_count_height * member_array_count_width;
+		    	//alert(length);
+		    	var member_array = new Array(length);
+		    	for (var i = 0; i < length; i++)
+		    	{
+		            member_array[i] = 0;
+		    	}
+		    	
+		    	
+		    	var eleMemberList = document.getElementById("id_member_list");
+		    	var memberList = eleMemberList.querySelectorAll("li.class_member");
+		    	for (var i = 0; i < memberList.length; i++)
+		    	{
+		    		var index = Math.floor(Math.random() * length);
+		    		while(true)
+		    		{
+		        		if (member_array[index] == 0)
+		        		{
+		            		member_array[index] = 1;
+		            		break;
+		        		}
+		        		
+		        		// 次の要素にする
+		        		index = (index + 1) % length;
+		    		}
+		    		
+		    		var leftIndex = index % member_array_count_width;
+		    		var topIndex = index / member_array_count_width;
+		    		var posLeft = member_width * leftIndex;
+		    		var posTop = member_height * topIndex;
+		    		
+		        	var member = memberList[i];
+		        	
+		        	/*
+		        	var orgLeft = 0;
+		        	var orgTop = 0;
+		        	var posLeft = Math.floor(Math.random() * (member_frame_width - member_width));
+		        	// 被った場合(他メンバと被る可能性がある。他の方法考える。メンバ数によって分割し配列で管理？)
+		        	if (posLeft >= orgLeft - member_width && posLeft <= orgLeft + member_width)
+		        	{
+		        		// 幅*2移動
+		            	posLeft = posLeft + member_width * 2;
+		            	// 範囲外の場合
+		            	if (posLeft > (member_frame_width - member_width))
+		            	{
+			            	posLeft = posLeft - (member_frame_width - member_width);
+		            	}
+		        	}
+		        	
+		        	var posTop = Math.floor(Math.random() * (member_frame_height - member_height));
+		        	if (posTop >= orgTop - member_height && posTop <= orgTop + member_height)
+		        	{
+		            	posTop = posTop + member_height * 2;
+		            	if (posTop > (member_frame_height - member_height))
+		            	{
+			            	posTop = posTop - (member_frame_height - member_height);
+		            	}
+		        	}
+		        	
+		        	orgLeft = posLeft;
+		        	orgTop = posTop;
+		        	*/
+		        	
+		        	$(member).css("left", posLeft);
+		        	$(member).css("top", posTop);
+		        }
+			});
+			
+			$("li.class_member").bind("click", function(){
+				//this.style.position = "static";
+				//this.style.transition = "all 0.5s";//ng
+				// static / transition にすると効かない -webkit-transition:エラー?
+				// 複数アニメ定義してランダムにする。
+				$(this).css({position: "relative", left: "0px", top: "0px"});//OK
+				//$(this).css({animation: "'opacity' 1s"});//OK
+				//$(this).attr("class", "class_member_selected");//OK.まだ元に戻る？
+				//$(this).addClass("class_member_selected");//ng?
+				
+				//$(this).unbind("webkitTransitionEnd");//NG.止まらない
+				//$(this).css({animation-play-state: "paused"});//NG
+				//$(this).css({animation: ""});//NG.アニメが止まらない
+				
+				// アニメーションを止める。方法は？？？
+			});
+			
+			// Transitionが終わった場合
+			$("li.class_member").bind("webkitTransitionEnd", function(){
+				// いろんなアニメにする
+				$(this).css({animation: "'scale' 5s ease-in-out infinite"});//OK
+				//$(this).attr("class", "class_member_selected");
+			});
+			
+			
+			// Transitionが終わった場合
+			$("div#id_sidebar_top").bind("webkitTransitionEnd", function(){
+				//$("img#id_img_top").toggleClass("src");//NG
+				//$("img#id_img_top").attr("src", "image/Up32.png"});//NG
+				//$("div#id_slider_top span").css({background: "'url('image/Up32.png')'"});//NG パス問題？
+				//$("div#id_slider_top span").css("background-image", "'url('image/Up32.png')'");//NG パス問題？
+				
+				
+				//$("span.class_span_top_down").css({transform: "rotate(180deg)"});//ok
+				
+				var span = document.querySelector("span.class_span_top_down");
+			    if (span) {
+			        span.className = "class_span_top_up";
+			    } else {
+			        span = document.querySelector("span.class_span_top_up");
+			        span.className = "class_span_top_down";
+			        //alert("down");
+			    }
+			    
+			    //$(this).unbind("webkitTransitionEnd");//NG。再登録できない？？
+			    //alert("ok");
+			});
+			
+			$("div#id_sidebar_bottom").bind("webkitTransitionEnd", function(){
+				//$("span.class_span_top_down").css({transform: "rotate(180deg)"});//ok
+				
+				var span = document.querySelector("span.class_span_bottom_up");
+			    if (span) {
+			        span.className = "class_span_bottom_down";
+			    } else {
+			        span = document.querySelector("span.class_span_bottom_down");
+			        span.className = "class_span_bottom_up";
+			    }
+			    
+			    //alert("ok");
+			});
+			
+			$("div#id_sidebar_left").bind("webkitTransitionEnd", function(){
+				//$("span.class_span_top_down").css({transform: "rotate(180deg)"});//ok
+				
+				var span = document.querySelector("span.class_span_left_right");
+			    if (span) {
+			        span.className = "class_span_left_left";
+			    } else {
+			        span = document.querySelector("span.class_span_left_left");
+			        span.className = "class_span_left_right";
+			    }
+			    
+			    //alert("ok");
+			});
+			
+			$("div#id_sidebar_right").bind("webkitTransitionEnd", function(){
+				//$("span.class_span_top_down").css({transform: "rotate(180deg)"});//ok
+				
+				var span = document.querySelector("span.class_span_right_left");
+			    if (span) {
+			        span.className = "class_span_right_right";
+			    } else {
+			        span = document.querySelector("span.class_span_right_right");
+			        span.className = "class_span_right_left";
+			    }
+			    
+			    //alert("ok");
+			});
+			
+			/*呼ばれない??
+			$("li").bind("click", function() {
+			    alert("li click");
+				this.style.position = "static";
+			});
+			
+			
+			$("#id_member_1").click(function() {
+				//$("#id_member_1").attr("class", "class_member_selected");
+				$("#id_member_1").css("position", "static");
+			});
+			
+			$("#id_member_2").click(function() {
+				//$("#id_member_2").attr("class", "class_member_selected");
+				$("#id_member_1").css("position", "static");
+			});
+			
+			$("#id_member_3").click(function() {
+				//$("#id_member_3").attr("class", "class_member_selected");
+				$("#id_member_1").css("position", "static");
+			});
+			*/
+			
+			
+			/*
+			$("div.class_slider_right").click(function() {
+			    $("div.class_sidebar_right").css("left", "0px");
+			});*/
+		});
+		
+		
+		/*呼ばれるが、classNameを設定してもcssが効かない？？動的に作ったから??
+		function member_click_1(){
+			var eleMember = document.getElementById("id_member_1");
+		    eleMember.className = "class_member_selected";
+		}
+		
+		function member_click_2(){
+			alert("member2");
+			var eleMember = document.getElementById("id_member_2");
+		    eleMember.className = "class_member_selected";
+		}
+		
+		function member_click_3(){
+			alert("member3");
+			var eleMember = document.getElementById("id_member_3");
+			if (eleMember) {
+		    	eleMember.className = "class_member_selected";
+			}
+		    else {
+		        alert("null");
+		    }
+		}*/
+		
+		/*簡単な方法で以下の関数を纏められるか後で調査*/
+		function topSliderClick(){
+		    var eleSideBar = document.querySelector("div.class_sidebar_top");
+		    if (eleSideBar) {
+		        eleSideBar.className = "class_sidebar_top_return";
+		    } else {
+		        eleSideBar = document.querySelector("div.class_sidebar_top_return");
+		        eleSideBar.className = "class_sidebar_top";
+		    }
+		    
+		    var eleSlider = document.querySelector("div.class_slider_top");
+		    if (eleSlider) {
+		        eleSlider.className = "class_slider_top_return";
+		    } else {
+		        eleSlider = document.querySelector("div.class_slider_top_return");
+		        eleSlider.className = "class_slider_top";
+		    }
+		    
+		    var eleFrameTop = document.querySelector("div.class_frame_top_display_none");
+		    if (eleFrameTop) {
+		        eleFrameTop.className = "class_frame_top_display";
+		    } else {
+		        eleFrameTop = document.querySelector("div.class_frame_top_display");
+		        eleFrameTop.className = "class_frame_top_display_none";
+		    }
+		    
+		}
+		
+		function bottomSliderClick(){
+		    var eleSideBar = document.querySelector("div.class_sidebar_bottom");
+		    if (eleSideBar) {
+		        eleSideBar.className = "class_sidebar_bottom_return";
+		    } else {
+		        eleSideBar = document.querySelector("div.class_sidebar_bottom_return");
+		        eleSideBar.className = "class_sidebar_bottom";
+		    }
+		    
+		    var eleSlider = document.querySelector("div.class_slider_bottom");
+		    if (eleSlider) {
+		        eleSlider.className = "class_slider_bottom_return";
+		    } else {
+		        eleSlider = document.querySelector("div.class_slider_bottom_return");
+		        eleSlider.className = "class_slider_bottom";
+		    }
+		    
+		    var eleFrame = document.querySelector("div.class_frame_bottom_display_none");
+		    if (eleFrame) {
+		        eleFrame.className = "class_frame_bottom_display";
+		    } else {
+		        eleFrame = document.querySelector("div.class_frame_bottom_display");
+		        eleFrame.className = "class_frame_bottom_display_none";
+		    }
+		}
+		
+		function leftSliderClick(){
+		    var eleSideBar = document.querySelector("div.class_sidebar_left");
+		    if (eleSideBar) {
+		        eleSideBar.className = "class_sidebar_left_return";
+		    } else {
+		        eleSideBar = document.querySelector("div.class_sidebar_left_return");
+		        eleSideBar.className = "class_sidebar_left";
+		    }
+		    
+		    var eleSlider = document.querySelector("div.class_slider_left");
+		    if (eleSlider) {
+		        eleSlider.className = "class_slider_left_return";
+		    } else {
+		        eleSlider = document.querySelector("div.class_slider_left_return");
+		        eleSlider.className = "class_slider_left";
+		    }
+		    
+		    var eleFrame = document.querySelector("div.class_frame_left_display_none");
+		    if (eleFrame) {
+		        eleFrame.className = "class_frame_left_display";
+		    } else {
+		        eleFrame = document.querySelector("div.class_frame_left_display");
+		        eleFrame.className = "class_frame_left_display_none";
+		    }
+		}
+		
+		function rightSliderClick(){
+		    var eleSideBar = document.querySelector("div.class_sidebar_right");
+		    if (eleSideBar) {
+		        eleSideBar.className = "class_sidebar_right_return";
+		    } else {
+		        eleSideBar = document.querySelector("div.class_sidebar_right_return");
+		        eleSideBar.className = "class_sidebar_right";
+		    }
+		    
+		    var eleSlider = document.querySelector("div.class_slider_right");
+		    if (eleSlider) {
+		        eleSlider.className = "class_slider_right_return";
+		    } else {
+		        eleSlider = document.querySelector("div.class_slider_right_return");
+		        eleSlider.className = "class_slider_right";
+		    }
+		    
+		    var eleFrame = document.querySelector("div.class_frame_right_display_none");
+		    if (eleFrame) {
+		        eleFrame.className = "class_frame_right_display";
+		    } else {
+		        eleFrame = document.querySelector("div.class_frame_right_display");
+		        eleFrame.className = "class_frame_right_display_none";
+		    }
+		}
+    </script>
+  </head>
+  <body>
+    <div id="id_main_frame" class="class_main_frame">
+      <div id="id_member_frame" class="class_member_frame">
+      	  <!--とりあえず固定にする-->
+      	  <ul id="id_member_list" class="class_member_list">
+      		  <li class="class_member">サンマ</li>
+      		  <li class="class_member">シンスケ</li>
+      		  <li class="class_member">タカトシ</li>
+      		  <li class="class_member">ブラマヨ</li>
+      		  <li class="class_member">ダウンタウン</li>
+      		  <li class="class_member">アリヨシ</li>
+      		  <li class="class_member">シンスケ</li>
+      		  <li class="class_member">スギーチャン</li>
+      		  <li class="class_member">バナナマン</li>
+      	  </ul>
+      </div>
+      <div id="id_sidebar_top" class="class_sidebar_top" >
+	      <div id="id_slider_top" class="class_slider_top" onclick="topSliderClick()">
+		      <!--<span><img id="id_img_top" src="image/Down32.png" /></span>-->
+		      <span class="class_span_top_down"></span>
+	      </div>
+	      <div id="id_frame_top" class="class_frame_top_display_none">
+      	      <p>About</p>
+      	  </div>
+      </div>
+      <div id="id_sidebar_bottom" class="class_sidebar_bottom" >
+	      <div id="id_slider_bottom" class="class_slider_bottom" onclick="bottomSliderClick()">
+		      <span class="class_span_bottom_up"></span>
+	      </div>
+	      <div id="id_frame_bottom" class="class_frame_bottom_display_none">
+      	      <p>Menu</p>
+      	  </div>
+      </div>
+      <div id="id_sidebar_left" class="class_sidebar_left" >
+	      <div id="id_slider_left" class="class_slider_left" onclick="leftSliderClick()">
+		      <span class="class_span_left_right"></span>
+	      </div>
+	      <div id="id_frame_left" class="class_frame_left_display_none">
+      	      <p>Setting</p>
+      	  </div>
+      </div>
+      <div id="id_sidebar_right" class="class_sidebar_right" >
+          <div id="id_slider_right" class="class_slider_right" onclick="rightSliderClick()">
+	          <span class="class_span_right_left"></span>
+          </div>
+          <div id="id_frame_right" class="class_frame_right_display_none">
+      	      <p>Register</p>
+      	  </div>
+      </div>
+    </div>
+  </body>
+</html>
